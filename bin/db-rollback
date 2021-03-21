@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+echo "[ bin/db-rollback ] Rolling back development database"
+bin/rails db:rollback
+
+echo "[ bin/db-rollback ] Rolling back test database"
+bin/rails db:rollback RAILS_ENV=test
