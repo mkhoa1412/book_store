@@ -8,10 +8,6 @@ require File.expand_path('../config/environment', __dir__)
 abort('The Rails environment is running in production mode!') if Rails.env.production?
 require 'rspec/rails'
 require 'database_cleaner/active_record'
-require 'action_policy/rspec'
-
-require_relative 'support/controller_macros'
-require_relative 'support/api_helper'
 
 begin
   ActiveRecord::Migration.maintain_test_schema!
@@ -34,8 +30,5 @@ RSpec.configure do |config|
 
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
-
-  config.include ApiHelper, type: :request
-  config.extend ControllerMacros, type: :controller
 end
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }

@@ -34,12 +34,20 @@ gem 'lograge'
 # ultimate pagination
 gem 'pagy', '~> 3.5'
 
+# serializer
+gem 'jsonapi-serializer'
+
 # sidekiq is for background job processing
 gem 'sidekiq'
+
+# API operations.
+gem 'rswag-api'
+gem 'rswag-ui'
 
 group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
+  gem 'json-schema_builder'
   gem 'rspec-rails'
   gem 'rswag-specs'
 
@@ -50,6 +58,7 @@ end
 
 group :test do
   gem 'capybara', '>= 2.15'
+  gem 'database_cleaner-active_record'
   gem 'selenium-webdriver'
   gem 'webdrivers'
 end

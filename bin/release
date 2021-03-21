@@ -2,5 +2,8 @@
 
 set -e 
 
+echo '💎 Installing gems'
+bundle check || bundle install
+
 echo "[ bin/release ] Running migrations"
 bin/rails db:migrate
