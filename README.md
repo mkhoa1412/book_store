@@ -1,4 +1,4 @@
-# book_store
+# Book Store
 
 This app does: Simple Book Store Api
 
