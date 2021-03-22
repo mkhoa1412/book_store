@@ -50,5 +50,4 @@ $ bin/release - Release phase script for Heroku to run migrations
 ## Development notes
 * Removes config/database.yml and config/secrets.yml because your app will get all configuration from ENV
 * SQL-based schema management so you can use any feature of Postgres you like
-* Does Not Business Logic in Active Records. Use A simple base ApplicationService and a service class generator bin/rails g service MyThing to encourage putting code in app/services
 * All datetime fields in migrations uses timestamp with time zone which is the proper type in Postgres.
