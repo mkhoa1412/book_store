@@ -28,7 +28,7 @@ $ docker-compose up sidekiq
 ```
 
 ## API DOCS
-*Spin up your app and check out the awesome, auto-generated docs at /api-docs
+* Check out the awesome, auto-generated docs at {host}/api-docs
 
 ## Tests and CI
 ```
