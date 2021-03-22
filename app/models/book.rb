@@ -10,6 +10,9 @@ class Book < ApplicationRecord
   scope :filter_by_title, lambda { |title|
     where(name: title).order(created_at: :desc) if title.present?
   }
+  scope :filter_by_author_name, lambda { |author_name|
+    joins(:author).merge(Author.filter_by_name(author_name)) if author_name.present?
+  }
 
   def self.find_by_id(id)
     super(id)

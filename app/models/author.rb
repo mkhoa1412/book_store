@@ -1,12 +1,20 @@
 class Author < ApplicationRecord
+  include PgSearch::Model
+
   attr_writer :book_source
 
   validates :name, presence: true
 
   has_many :books, -> { order(created_at: :desc) }
 
+  pg_search_scope :search_name,
+                  against: :name,
+                  using: {
+                    trigram: { threshold: 0.3 },
+                    dmetaphone: { any_word: true, sort_only: true }
+                  }
   scope :filter_by_name, lambda { |name|
-    where(name: name).order(created_at: :desc) if name.present?
+    search_name(name).order(created_at: :desc) if name.present?
   }
 
   def to_s

@@ -13,6 +13,7 @@ RSpec.describe 'Books Api', swagger_doc: 'v1/books.json' do
 
       parameter name: :page, in: :query, type: :integer, required: false
       parameter name: :title, in: :query, type: :string, required: false
+      parameter name: :author_name, in: :query, type: :string, required: false
 
       response '200', 'book list' do
         expected_response_schema = SpecSchemas::BookFilterResponse.new

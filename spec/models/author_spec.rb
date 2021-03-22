@@ -53,4 +53,15 @@ RSpec.describe Author, type: :model do
       expect(subject.books.size).to eq(1)
     end
   end
+
+  describe '#filter_by_name' do
+    before do
+      @batman = create(:author, name: 'Batman')
+      @batgirl = create(:author, name: 'Batgirl')
+      @robin = create(:author, name: 'Robin')
+    end
+    it 'whose name starts with' do
+      expect(subject.class.filter_by_name('bat')).to eq([@batman, @batgirl])
+    end
+  end
 end

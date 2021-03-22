@@ -48,7 +48,7 @@ class Api::V1::BooksController < Api::BaseController
   end
 
   def filter_params
-    params.permit(:title)
+    params.permit(:title, :author_name)
   end
 
   # Use callbacks to share common setup or constraints between actions.

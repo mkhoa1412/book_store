@@ -46,6 +46,7 @@ gem 'rswag-ui'
 
 # others
 gem 'money-rails', '~>1.12'
+gem 'pg_search'
 
 group :development, :test do
   gem 'factory_bot_rails'

@@ -26,4 +26,15 @@ RSpec.describe Book, type: :model do
       expect(@it.publish).to equal(false)
     end
   end
+
+  describe '#filter_by_author_name' do
+    before do
+      @book_1 = create(:book, author: create(:author, name: 'Jonh Smith'))
+      @book_2 = create(:book, author: create(:author, name: 'Tom Cruse'))
+      @book_3 = create(:book, author: create(:author, name: 'Aamir Khan'))
+    end
+    it 'list book of author' do
+      expect(Book.filter_by_author_name('amir')).to eq([@book_3])
+    end
+  end
 end

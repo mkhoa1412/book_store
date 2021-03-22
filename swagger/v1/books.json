@@ -35,6 +35,12 @@
             "in": "query",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "author_name",
+            "in": "query",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {
