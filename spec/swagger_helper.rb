@@ -31,6 +31,16 @@ RSpec.configure do |config|
       consumes: ['application/json'],
       produces: ['application/json'],
       paths: {}
+    },
+    'v1/books.json' => {
+      swagger: '2.0',
+      info: {
+        title: 'API Session',
+        version: 'v1'
+      },
+      consumes: ['application/json'],
+      produces: ['application/json'],
+      paths: {}
     }
   }
 end

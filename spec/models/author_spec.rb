@@ -14,8 +14,43 @@ RSpec.describe Author, type: :model do
     expect(it.errors).to have_key(:name)
   end
 
-  it '#to_s retun correct name' do
-    it = build_stubbed(:author, name: 'Tommy')
-    expect(it.to_s).to eq('Tommy')
+  subject       { Author.new(books: books) }
+  let(:books) { [] }
+
+  it 'has no books' do
+    expect(subject.books).to be_empty
+  end
+
+  describe '#to_s' do
+    it 'retun correct name' do
+      subject.name = 'Tommy'
+      expect(subject.to_s).to eq('Tommy')
+    end
+  end
+
+  describe '#new_book' do
+    let(:new_book) { OpenStruct.new }
+
+    before do
+      subject.book_source = -> { new_book }
+    end
+
+    it 'returns a new book' do
+      expect(subject.new_book).to eq(new_book)
+    end
+
+    it "sets the book's author reference to itself" do
+      expect(subject.new_book.author).to eq(subject)
+    end
+  end
+
+  describe '#write_book' do
+    it 'adds the book to the author' do
+      book = build_stubbed(:book)
+      allow(book).to receive(:save).and_return(true)
+      subject.write_book(book)
+
+      expect(subject.books.size).to eq(1)
+    end
   end
 end

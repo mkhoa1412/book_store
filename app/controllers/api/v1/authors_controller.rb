@@ -42,7 +42,7 @@ class Api::V1::AuthorsController < Api::BaseController
   private
 
   def fetch_data
-    Author.filter_by(filter_params).order(created_at: :desc)
+    Author.filter_by_name(filter_params[:name])
   end
 
   def filter_params

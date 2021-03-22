@@ -1,21 +1,25 @@
 require 'swagger_helper'
 
-RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
-  path '/api/v1/authors' do
-    get 'fetch authors accept fillter' do
-      tags 'author'
+RSpec.describe 'Books Api', swagger_doc: 'v1/books.json' do
+  before do
+    @author = create(:author)
+  end
+
+  path '/api/v1/books' do
+    get 'fetch books accept fillter' do
+      tags 'book'
 
       security [Bearer: {}]
 
       parameter name: :page, in: :query, type: :integer, required: false
-      parameter name: :name, in: :query, type: :string, required: false
+      parameter name: :title, in: :query, type: :string, required: false
 
-      response '200', 'author list' do
-        expected_response_schema = SpecSchemas::AuthorFilterResponse.new
+      response '200', 'book list' do
+        expected_response_schema = SpecSchemas::BookFilterResponse.new
         schema(expected_response_schema.schema.as_json)
 
         before do
-          create_list(:author, 3)
+          create_list(:book, 3, author: @author)
         end
 
         before do |example|
@@ -34,21 +38,22 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
       end
     end
 
-    post 'Create a author' do
-      tags 'author'
+    post 'Create a book' do
+      tags 'book'
       security [Bearer: {}]
 
-      expected_request_schema = SpecSchemas::AuthorCreateResquest.new
+      expected_request_schema = SpecSchemas::BookCreateResquest.new
       parameter name: :params, in: :body, schema: expected_request_schema.schema.as_json
 
-      let(:build_author) { build_stubbed(:author) }
+      let(:build_book) { build_stubbed(:book) }
 
-      response(201, 'author created') do
-        expected_response_schema = SpecSchemas::AuthorResponse.new
+      response(201, 'book created') do
+        expected_response_schema = SpecSchemas::BookResponse.new
         schema(expected_response_schema.schema.as_json)
 
         let(:params) do
-          { author: { name: build_author.name } }
+          { book: { title: build_book.title, price: build_book.price_cents },
+            author_id: @author.id }
         end
 
         before do |example|
@@ -60,16 +65,16 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
           let(:expected_request_schema) { expected_request_schema }
         end
 
-        it 'created author' do
+        it 'success' do
           data = JSON.parse(response.body)
-          expect(data['data']['attributes']['name']).to eq(build_author.name)
+          expect(data['data']['attributes']['title']).to eq(build_book.title)
           expect(data['data']['attributes']['id']).not_to be_nil
         end
       end
 
       response(422, 'Unprocessable Entity') do
         let(:params) do
-          { author: { name: '' } }
+          { book: { title: '' }, author_id: @author.id }
         end
 
         before do |example|
@@ -84,17 +89,17 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
     end
   end
 
-  path '/api/v1/authors/{id}' do
-    get 'Retrieve a author' do
-      tags 'author'
+  path '/api/v1/books/{id}' do
+    get 'Retrieve a book' do
+      tags 'book'
       security [Bearer: []]
       parameter name: :id, in: :path, type: :string
 
-      response '200', 'author found' do
-        expected_response_schema = SpecSchemas::AuthorResponse.new
+      response '200', 'book found' do
+        expected_response_schema = SpecSchemas::BookResponse.new
         schema(expected_response_schema.schema.as_json)
 
-        let(:id) { create(:author).id }
+        let(:id) { create(:book, author: @author).id }
 
         before do |example|
           submit_request(example.metadata)
@@ -105,13 +110,13 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
           let(:expected_request_schema) { nil }
         end
 
-        it 'get author' do
+        it 'get book' do
           data = JSON.parse(response.body)
           expect(data['data']['attributes']['id']).to match(id)
         end
       end
 
-      response '404', 'author not found' do
+      response '404', 'book not found' do
         let(:id) { 'invalid' }
 
         run_test! do |response|
@@ -121,21 +126,22 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
       end
     end
 
-    put 'update a author' do
-      tags 'author'
+    put 'update a book' do
+      tags 'book'
       security [Bearer: {}]
 
-      expected_request_schema = SpecSchemas::AuthorUpdateResquest.new
+      expected_request_schema = SpecSchemas::BookUpdateResquest.new
       parameter name: :params, in: :body, schema: expected_request_schema.schema.as_json
       parameter name: :id, in: :path, required: true, type: :string
 
       response '200', 'updated' do
-        expected_response_schema = SpecSchemas::AuthorResponse.new
+        expected_response_schema = SpecSchemas::BookResponse.new
         schema(expected_response_schema.schema.as_json)
 
-        let(:id) { create(:author).id }
+        let(:id) { create(:book, author: @author).id }
         let(:params) do
-          { author: { name: 'new name' } }
+          { book: { title: 'new title', price: 11.11 },
+            author_id: @author.id }
         end
 
         before do |example|
@@ -149,13 +155,13 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
 
         it 'success' do
           data = JSON.parse(response.body)
-          expect(data['data']['attributes']['name']).to eq('new name')
+          expect(data['data']['attributes']['title']).to eq('new title')
         end
       end
 
       response(422, 'Unprocessable Entity') do
-        let(:id) { create(:author).id }
-        let(:params) { { author: { name: ' ' } } }
+        let(:id) { create(:book, author: @author).id }
+        let(:params) { { book: { title: ' ' }, author_id: @author.id } }
 
         run_test! do |response|
           data = JSON.parse(response.body)
@@ -164,14 +170,14 @@ RSpec.describe 'Authors Api', swagger_doc: 'v1/authors.json' do
       end
     end
 
-    delete 'delete a author' do
-      tags 'author'
+    delete 'delete a book' do
+      tags 'book'
       security [Bearer: {}]
 
       parameter name: :id, in: :path, required: true, type: :string
 
       response '200', 'deleted' do
-        let(:id) { create(:author).id }
+        let(:id) { create(:book, author: @author).id }
 
         before do |example|
           submit_request(example.metadata)

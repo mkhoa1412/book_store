@@ -57,6 +57,40 @@ ALTER SEQUENCE public.authors_id_seq OWNED BY public.authors.id;
 
 
 --
+-- Name: books; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE public.books (
+    id bigint NOT NULL,
+    author_id bigint,
+    title character varying NOT NULL,
+    price_cents integer DEFAULT 0 NOT NULL,
+    price_currency character varying DEFAULT 'USD'::character varying NOT NULL,
+    created_at timestamp(6) with time zone NOT NULL,
+    updated_at timestamp(6) with time zone NOT NULL
+);
+
+
+--
+-- Name: books_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE public.books_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: books_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE public.books_id_seq OWNED BY public.books.id;
+
+
+--
 -- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -70,6 +104,13 @@ CREATE TABLE public.schema_migrations (
 --
 
 ALTER TABLE ONLY public.authors ALTER COLUMN id SET DEFAULT nextval('public.authors_id_seq'::regclass);
+
+
+--
+-- Name: books id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.books ALTER COLUMN id SET DEFAULT nextval('public.books_id_seq'::regclass);
 
 
 --
@@ -89,11 +130,34 @@ ALTER TABLE ONLY public.authors
 
 
 --
+-- Name: books books_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.books
+    ADD CONSTRAINT books_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY public.schema_migrations
     ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
+-- Name: index_books_on_author_id; Type: INDEX; Schema: public; Owner: -
+--
+
+CREATE INDEX index_books_on_author_id ON public.books USING btree (author_id);
+
+
+--
+-- Name: books fk_rails_53d51ce16a; Type: FK CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY public.books
+    ADD CONSTRAINT fk_rails_53d51ce16a FOREIGN KEY (author_id) REFERENCES public.authors(id);
 
 
 --
@@ -103,6 +167,7 @@ ALTER TABLE ONLY public.schema_migrations
 SET search_path TO "$user", public;
 
 INSERT INTO "schema_migrations" (version) VALUES
-('20210321100223');
+('20210321100223'),
+('20210321121043');
 
 

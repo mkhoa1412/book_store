@@ -44,6 +44,9 @@ gem 'sidekiq'
 gem 'rswag-api'
 gem 'rswag-ui'
 
+# others
+gem 'money-rails', '~>1.12'
+
 group :development, :test do
   gem 'factory_bot_rails'
   gem 'faker'
